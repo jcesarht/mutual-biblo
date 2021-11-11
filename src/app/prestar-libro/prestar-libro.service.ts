@@ -6,7 +6,7 @@ import { Observable } from "rxjs";
 })
 export class BibloService {
   messages: string[] = [];
-  private url: string = 'http://bibliotecamutual.mutual/api/';
+  private url: string = 'http://localhost/bibliotecamutual/api/';
   
   constructor(public http: HttpClient ) { 
   	 //this.http.get('https://reqres.in/api/users?page=2');
