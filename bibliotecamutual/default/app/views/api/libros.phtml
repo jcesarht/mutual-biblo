@@ -1,0 +1,69 @@
+<?php
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+header("Allow: GET, POST, OPTIONS, PUT, DELETE");
+
+$libro = json_decode(file_get_contents('php://input'),true);
+$titulo = strtoupper($libro['titulo']);
+$isbn = $libro['isbn'];
+$nombre_persona = strtoupper($libro['nombre_persona']);
+$respuesta = Array();
+$fecha_actual = date('Y-m-d');
+$fecha_entrega = '';
+$solo_numeros = str_split("".filter_var($isbn, FILTER_SANITIZE_NUMBER_INT));
+$suma_numeros_isbn = 0;
+if($titulo != ''){
+	//verifica si es palindromo
+	$cadenainvertida = strrev($titulo);
+	if (strcmp($titulo, $cadenainvertida)==0){
+	    $respuesta = ['estado' => 'warning','mensaje' => 'Los libros palíndromos solo se pueden utilizar en la biblioteca','libros' => []];
+	}else{
+		if($isbn != ''){
+			foreach ($solo_numeros as $value) {
+				if(is_numeric($value)){
+					$suma_numeros_isbn += $value;
+				} 
+			}
+			if($suma_numeros_isbn > 30){
+				$sumar_15_dias = 14;
+				$fecha_entrega = date("d-m-Y",strtotime($fecha_actual."+ ".$sumar_15_dias." days"));
+				$starDate = new DateTime($fecha_actual);
+				$endDate = new DateTime($fecha_entrega);
+				$interval = $starDate->diff($endDate);
+				$numberOfDays = $interval->format('%d days');
+				for($i = 1; $i <= $numberOfDays; $i++){
+				     if($starDate->format('l')== 'Sunday'){
+				            $sumar_15_dias++;
+				     }
+				     $starDate->modify("+1 days");                
+				}
+				//$sumar_15_dias--;
+				$fecha_entrega = date("d-m-Y",strtotime($fecha_actual."+ ".$sumar_15_dias." days"));
+				$verificar_domingo = new DateTime($fecha_entrega);
+				if($verificar_domingo->format('l')== 'Sunday'){
+					$fecha_entrega = date("d-m-Y",strtotime($fecha_entrega."+ 1 days"));
+				}
+			}
+			$libros = new Libros();
+			$check = $libros->registrarLibro($titulo,$isbn,$nombre_persona,$fecha_entrega);
+			if($check['estado']){
+				$libros_prestados = (new Libros)->find();
+				if(count($libros_prestados) == 0){
+					$libros_prestados = [];
+				}
+				$respuesta = ['estado' => 'success','mensaje' => 'Libro prestado con exito','libros' => $libros_prestados];
+			}else{
+				$respuesta = ['estado' => 'error','mensaje' => $check['mensaje'],'libros' => []];
+			}
+		}else{
+			$respuesta = ['estado' => 'error','mensaje' => 'Por favor escriba el ISBN del libro','libros' => []];
+		}	    
+	}
+}else{
+	$respuesta = ['estado' => 'error','mensaje' => 'Por favor escriba el título del libro','libros' => []];
+}
+//fin de la verificación del palindromo
+
+echo json_encode($respuesta);
+?>

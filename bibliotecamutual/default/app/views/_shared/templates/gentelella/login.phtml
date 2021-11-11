@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title><?php echo $titulo; ?> | TBRIG</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../../img/favicon_16.png" sizes="16x16" />
+    <link rel="icon" type="image/png" href="../../img/favicon_32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="../../img/favicon_64.png" sizes="64x64" />
+    <?php 
+      View::partial('head_plain_page');
+      if(isset($head_partial_componente)){
+        $total_componente_link = count($head_partial_componente);
+        for($cl = 0; $cl < $total_componente_link; $cl++){
+            View::partial($head_partial_componente[$cl]);
+        }
+      }
+    ?>    
+    <link href="../../plantillas/gentelella-master/
+/vendors/animate.css/animate.min.css" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link href="../../plantillas/gentelella-master/
+/build/css/custom.min.css" rel="stylesheet">
+  </head>
+    <body>
+    <?php View::content(); ?>
+    <?php 
+      if(isset($js_partial)){
+        View::partial($js_partial);
+      }
+      if(isset($js_partial_componente)){
+        $total_componente_js = count($js_partial_componente);
+        for($cj = 0; $cj < $total_componente_js; $cj++){
+            View::partial($js_partial_componente[$cj]);
+        }
+      }
+    ?>
+    <!-- Custom Theme Scripts -->
+    <script src="../../plantillas/gentelella-master/build/js/custom.min.js"></script>
+  </body>
+</html>

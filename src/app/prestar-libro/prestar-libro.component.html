@@ -1,0 +1,34 @@
+<div id="div_content" >
+	<div align="center"><label><h2 >Bibliotecario: {{bibliotecario}}</h2></label></div>
+	<div id="div_mensaje" align="center"><h3 class="{{clase}}">{{mensaje}}</h3></div>
+	<div id="bibliotecario">
+		
+		<div id="div_formulario" align="center">
+			<form [formGroup]="form" (ngSubmit)="enviar($event)">
+			  <p>
+			    <input type="text" formControlName="titulo" placeholder="Título">
+			  </p>
+			  <p>
+			    
+			    <input type="text" formControlName="isbn" placeholder="ISBN">
+			  </p>
+			  <p>
+			    <input type="test" formControlName="nombre_persona" placeholder="Nombre de la Persona">
+			  </p>
+			  <button type="submit">Guardar</button> 
+			</form>
+		</div>
+		<div align="center">
+			<h2>Libros Prestados</h2>	
+		</div>
+		<div align="center">
+			<div id="div_libro_prestado" *ngFor="let book of libro" align="left">
+				<strong>Titulo:</strong> {{ book.titulo }}
+				<strong>ISBN:</strong> {{ book.isbn }}
+				<strong>Prestado a:</strong> {{ book.nombre_persona }}
+				<strong>Fecha Prestamo:</strong> {{ book.fecha_prestamo }}
+				<strong>Fecha Entrega:</strong> {{ book.fecha_entrega }}
+			</div>
+		</div>
+	</div>
+</div>
